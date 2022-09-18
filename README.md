@@ -19,17 +19,20 @@ from pyrogram_middleware_patch import patch
 app = Client("my_account", api_id=api_id, api_hash=api_hash)
 
 # patch client
-patch(app)
+patch_manager = patch(app)
 
 # include middleware
-app.dispatcher.include_middleware(MyMiddleware(*args, **kwargs))
+patch_manager.include_middleware(MyMiddleware(*args, **kwargs))
 
 ```
 
 ## Create middleware
 
 ```python
-class MyMiddleware:
+from pyrogram_middleware_patch.types import OnUpdateMiddleware
+
+
+class MyMiddleware(OnUpdateMiddleware):
 
     # it can be any value you want
 
@@ -45,7 +48,7 @@ class MyMiddleware:
 ```
 
 
-## handle midleware data
+## Handle midleware data
 
 ```python
 
@@ -53,20 +56,32 @@ class MyMiddleware:
 async def my_commands(client, message, my_value_name):
     print(my_value_name)
 
-# if you don't get any arguments, an error will be thrown.
-# so please use **kwargs now, it will be fixed in future updates
-# more details: https://kotttee.github.io/docs/pyrogram-middleware-patch/
+```
+## Middleware types and updates
+```text
+middleware - middleware which is called if the update is used
+outer middleware - middleware that handles everything even if it wasn't caught by the handler
+```
+events and middlewares
+```text
+on_message - OnMessageMiddleware
+on_inline_query - OnInlineQueryMiddleware
+on_user_status - OnUserStatusMiddleware
+on_disconnect - OnDisconnectMiddleware
+on_edited_message - OnEditedMessageMiddleware
+on_deleted_messages - OnDeletedMessagesMiddleware
+on_chosen_inline_result - OnChosenInlineResultMiddleware
+on_chat_member_updated - OnChatMemberUpdatedMiddleware
+on_raw_update - OnRawUpdateMiddleware
+on_chat_join_request - OnChatJoinRequestMiddleware
+on_callback_query - OnCallbackQueryMiddleware
+on_poll - OnPoolMiddleware
 
-
-@app.on_message(filters.me)
-async def my_commands(client, message):
-    # error
-
-
-@app.on_message(filters.me)
-async def my_commands(client, message, *kw):
-    # ok!
-
+OnUpdateMiddleware - middleware that reacts to everything
+```
+everything you can import from
+```python
+pyrogram_middleware_patch.types
 ```
 
 ## Contributing

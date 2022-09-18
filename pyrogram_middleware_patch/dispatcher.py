@@ -63,6 +63,7 @@ class PatchedDispatcher:
         self.updates_queue = asyncio.Queue()
         self.groups = OrderedDict()
         self.middlewares = []
+        self.outer_middlewares = []
 
         async def message_parser(update, users, chats):
             return (
@@ -203,6 +204,9 @@ class PatchedDispatcher:
     def include_middleware(self, middleware: object) -> None:
         self.middlewares.append(middleware)
 
+    def include_outer_middleware(self, middleware: object) -> None:
+        self.outer_middlewares.append(middleware)
+
     async def handler_worker(self, lock):
         while True:
             packet = await self.updates_queue.get()
@@ -219,6 +223,13 @@ class PatchedDispatcher:
                     if parser is not None
                     else (None, type(None))
                 )
+                kwargs = {}
+                if len(self.outer_middlewares) > 0:
+                    for mw in self.outer_middlewares:
+                        if mw == handler_type:
+                            for k, v in mw(parsed_update).items():
+                                if k in handler.callback.__code__.co_varnames:
+                                    kwargs = kwargs | {k: v}
                 async with lock:
                     for group in self.groups.values():
                         for handler in group:
@@ -226,17 +237,24 @@ class PatchedDispatcher:
                             if isinstance(handler, handler_type):
                                 try:
                                     if await handler.check(self.client, parsed_update):
-                                        kwargs = {}
                                         if len(self.middlewares) > 0:
                                             for mw in self.middlewares:
-                                                for k, v in mw(parsed_update).items():
-                                                    kwargs = kwargs | {k: v}
+                                                if mw == handler:
+                                                    for k, v in mw(parsed_update).items():
+                                                        if k in handler.callback.__code__.co_varnames:
+                                                            kwargs = kwargs | {k: v}
                                         args = (parsed_update,)
                                 except Exception as e:
                                     log.error(e, exc_info=True)
                                     continue
 
                             elif isinstance(handler, RawUpdateHandler):
+                                if len(self.middlewares) > 0:
+                                    for mw in self.middlewares:
+                                        if mw == handler:
+                                            for k, v in mw(parsed_update).items():
+                                                if k in handler.callback.__code__.co_varnames:
+                                                    kwargs = kwargs | {k: v}
                                 args = (update, users, chats)
 
                             if args is None:
