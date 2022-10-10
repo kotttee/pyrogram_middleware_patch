@@ -227,8 +227,8 @@ class PatchedDispatcher:
                 if len(self.outer_middlewares) > 0:
                     for mw in self.outer_middlewares:
                         if mw == handler_type:
-                            for k, v in mw(parsed_update).items():
-                                if k in handler.callback.__code__.co_varnames:
+                            result = await mw(parsed_update)
+                            for k, v in result.items():
                                     kwargs = kwargs | {k: v}
                 async with lock:
                     for group in self.groups.values():
@@ -240,7 +240,8 @@ class PatchedDispatcher:
                                         if len(self.middlewares) > 0:
                                             for mw in self.middlewares:
                                                 if mw == handler:
-                                                    for k, v in mw(parsed_update).items():
+                                                    result = await mw(parsed_update)
+                                                    for k, v in result.items():
                                                         if k in handler.callback.__code__.co_varnames:
                                                             kwargs = kwargs | {k: v}
                                         args = (parsed_update,)
@@ -252,7 +253,8 @@ class PatchedDispatcher:
                                 if len(self.middlewares) > 0:
                                     for mw in self.middlewares:
                                         if mw == handler:
-                                            for k, v in mw(parsed_update).items():
+                                            result = await mw(parsed_update)
+                                            for k, v in result.items():
                                                 if k in handler.callback.__code__.co_varnames:
                                                     kwargs = kwargs | {k: v}
                                 args = (update, users, chats)

@@ -40,7 +40,7 @@ class MyMiddleware(OnUpdateMiddleware):
         self.value = value
 
     # you cannot change the call arguments
-    def __call__(self, update) -> dict:
+    async def __call__(self, update) -> dict:
         
         # do whatever you want
         # need to return dictionary
@@ -60,7 +60,7 @@ async def my_commands(client, message, my_value_name):
 ## Middleware types and updates
 ```text
 middleware - middleware which is called if the update is used
-outer middleware - middleware that handles everything even if it wasn't caught by the handler
+outer middleware - middleware that handles everything even if it wasn't caught by the handler. !!!pay attention to the arguments
 ```
 events and middlewares
 ```text

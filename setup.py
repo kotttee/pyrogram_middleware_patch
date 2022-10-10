@@ -11,7 +11,7 @@ if sys.version_info < MINIMAL_PY_VERSION:
 
 setup(
     name='pyrogram_middleware_patch',
-    version='1.1',
+    version='1.2',
     license='MIT',
     author='kotttee',
     python_requires='>=3.9',
