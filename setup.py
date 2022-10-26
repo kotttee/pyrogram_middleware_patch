@@ -11,12 +11,12 @@ if sys.version_info < MINIMAL_PY_VERSION:
 
 setup(
     name='pyrogram_middleware_patch',
-    version='1.3',
+    version='1.3.1',
     license='MIT',
     author='kotttee',
     python_requires='>=3.9',
     description='This package will add middlewares for pyrogram',
-    url='https://github.com/kotttee/pyrogram_patch/',
+    url='https://github.com/kotttee/pyrogram_middleware_patch/',
     install_requires=['pyrogram>=2.0.0'],
     classifiers=[
         'License :: MIT License',
