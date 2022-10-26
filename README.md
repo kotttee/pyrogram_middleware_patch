@@ -53,7 +53,7 @@ class MyMiddleware(OnUpdateMiddleware):
     # skip_handler() - use this method to skip the handler
     # middleware_helper.state.state - this way you can get the current state
 ```
-## Using filters 
+## Using filters with outer_middlewares
 ```python
 async def my_filter(_, __, query) -> bool:
     some_data = await query.middleware_helper.get_data('my_value_name')
