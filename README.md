@@ -46,7 +46,6 @@ class MyMiddleware(OnUpdateMiddleware):
     # you cannot change the call arguments
     async def __call__(self, update, middleware_helper: MiddlewareHelper):
         # do whatever you want
-        # need to return dictionary
         return await middleware_helper.insert_data('my_value_name', self.value)
 
     # get_data() - use this method to get the data you saved earlier
