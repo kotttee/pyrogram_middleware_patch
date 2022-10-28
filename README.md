@@ -50,7 +50,7 @@ class MyMiddleware(OnUpdateMiddleware):
 
     # get_data() - use this method to get the data you saved earlier
     # skip_handler() - use this method to skip the handler
-    # middleware_helper.state.state - this way you can get the current state
+    # middleware_helper.state.state - this way you can get the current state ! works just in pyrogram_patch
 ```
 ## Using filters with outer_middlewares
 ```python
