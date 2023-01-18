@@ -1,4 +1,6 @@
-# pyrogram_patch
+# pyrogram_patch (outdated)
+
+outdated package, use full patch instead https://github.com/kotttee/pyrogram_patch
 
 pyrogram_middleware_patch is a Python library this is a library that adds middlewares to pyrogram.
 
